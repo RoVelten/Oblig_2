@@ -14,7 +14,6 @@
 #include "camera.h"
 #include "axesgizmo.h"
 #include "shaderprogram.h"
-#include "beziercurve.h"
 
 
 class GameEngine : public QOpenGLWidget, protected QOpenGLFunctions

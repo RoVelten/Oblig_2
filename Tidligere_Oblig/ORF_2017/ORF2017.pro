@@ -10,6 +10,7 @@ equals(QT_MINOR_VERSION, 4): QMAKE_CXXFLAGS += -std=c++11
 greaterThan(QT_MINOR_VERSION, 4): CONFIG += c++11
 
 SOURCES += main.cpp \
+    ball.cpp \
     camera.cpp \
     gameobject.cpp\
     gameengine.cpp \
@@ -21,11 +22,10 @@ SOURCES += main.cpp \
     vertex.cpp \
     plane.cpp \
     sosimap.cpp \
-    beziercurve.cpp \
-    beziercurve.cpp \
     trianglesurface.cpp
 
 HEADERS += \
+    ball.h \
     transform.h \
     camera.h \
     gameobject.h \
@@ -40,8 +40,6 @@ HEADERS += \
     vec2.h \
     plane.h \
     sosimap.h \
-    beziercurve.h \
-    beziercurve.h \
     trianglesurface.h
 
 FORMS += \
