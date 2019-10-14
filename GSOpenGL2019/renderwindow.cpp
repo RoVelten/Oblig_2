@@ -14,6 +14,8 @@
 
 #include "xyz.h"
 #include "trianglesurface.h"
+#include "sphere.h"
+#include "rollingball.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -101,14 +103,27 @@ void RenderWindow::init()
     temp->init();
     mVisualObjects.push_back(temp);
 
-    //testing triangle surface class
-    temp = new TriangleSurface();
-    temp->init();
-    mVisualObjects.push_back(temp);
+    mSurface = new TriangleSurface();
+    mSurface->readTxtFiles("D:/Programming/OpenGL/Vissim/TerrainData");
+    mSurface->init();
+    mVisualObjects.push_back(mSurface);
+
+
+    mPlayer = new RollingBall();
+    mPlayer->init();
+    mPlayer->mMatrix.setPosition(50,150,50);
+    mVisualObjects.push_back(mPlayer);
+    for(int i=0; i<10; i++)
+    {
+        mBalls.push_back(new RollingBall());
+        mBalls.back()->init();
+        mBalls.back()->mMatrix.setPosition(i*100,100,i*100);
+        mVisualObjects.push_back(mBalls.back());
+    }
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(-1.f, -.5f, 2.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(-1.f, -100.f, 4.f));
 }
 
 ///Called each frame - doing the rendering
@@ -119,26 +134,23 @@ void RenderWindow::render()
 
     mCurrentCamera->update();
 
+    static_cast<RollingBall*>(mPlayer)->move(mSurface);
+    for (auto& ball : mBalls)
+        ball->move(mSurface);
+
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //******** This should be done with a loop!
+    for(auto& object : mVisualObjects)
     {
         glUseProgram(mShaderProgram[0]->getProgram());
         glUniformMatrix4fv( vMatrixUniform0, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform0, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform0, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
-        mVisualObjects[0]->draw();
-
-        glUseProgram(mShaderProgram[1]->getProgram());
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
-        glUniform1i(mTextureUniform, 1);
-        mVisualObjects[1]->draw();
+        glUniformMatrix4fv( mMatrixUniform0, 1, GL_TRUE, object->mMatrix.constData());
+        object->draw();
     }
 
     //Calculate framerate before
@@ -155,6 +167,29 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 }
 
+gsl::Vector3D RenderWindow::CalculateBarycentricCoordinates(VisualObject* plane, VisualObject* object)
+{
+    for (unsigned int i=0; i<plane->mIndices.size(); i+=3)
+    {
+        gsl::Vector3D pos1;
+        gsl::Vector3D pos2;
+        gsl::Vector3D pos3;
+        pos1 = plane->mVertices[plane->mIndices[i+0]].mXYZ;
+        pos2 = plane->mVertices[plane->mIndices[i+1]].mXYZ;
+        pos3 = plane->mVertices[plane->mIndices[i+2]].mXYZ;
+
+        gsl::Vector2D temp = gsl::Vector2D(object->mMatrix.getPosition().x, object->mMatrix.getPosition().z);
+        gsl::Vector3D bar = temp.barycentricCoordinates(gsl::Vector2D(pos1.x,pos1.z),gsl::Vector2D(pos2.x, pos2.z), gsl::Vector2D(pos3.x,pos3.z));
+
+        if(bar.x>=0 && bar.x<=1 && bar.y>=0 && bar.y<=1 && bar.z>=0 && bar.z <=1)
+        {
+            float playerTempPos = (pos1.y*bar.x + pos2.y*bar.y + pos3.y*bar.z) + 1; //1 = radius
+            LastPlayerSurfacePosition = gsl::Vector3D(object->mMatrix.getPosition().x,playerTempPos,object->mMatrix.getPosition().z);
+            return LastPlayerSurfacePosition;
+        }
+    }
+    return LastPlayerSurfacePosition;
+}
 void RenderWindow::setupPlainShader(int shaderIndex)
 {
     mMatrixUniform0 = glGetUniformLocation( mShaderProgram[shaderIndex]->getProgram(), "mMatrix" );
@@ -193,7 +228,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     }
     mAspectratio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 1.f, 100.f);
+    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 1.f, 1000.f);
     //    qDebug() << mCamera.mProjectionMatrix;
 }
 

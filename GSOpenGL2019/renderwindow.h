@@ -38,6 +38,10 @@ private slots:
     void render();
 
 private:
+
+    class TriangleSurface* mSurface;
+    class RollingBall* mPlayer;
+
     void init();
     void setCameraSpeed(float value);
 
@@ -59,6 +63,7 @@ private:
     GLint mTextureUniform{-1};
 
     std::vector<VisualObject*> mVisualObjects;
+    std::vector<RollingBall*> mBalls;
 
     Camera *mCurrentCamera{nullptr};
 
@@ -84,6 +89,9 @@ private:
     void startOpenGLDebugger();
 
     void handleInput();
+
+    gsl::Vector3D CalculateBarycentricCoordinates(VisualObject *plane, VisualObject *object);
+    gsl::Vector3D LastPlayerSurfacePosition = {};
 
 protected:
     //The QWindow that we inherit from has these functions to capture

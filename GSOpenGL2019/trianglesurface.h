@@ -16,6 +16,24 @@ public:
     void readFile(std::string filename);
     void writeFile(std::string filename);
     void construct();
+    void readTxtFiles(std::string directory);
+
+
+private:
+
+    void calculateNormals();
+    std::vector<int> mNeighbor;
+    void triangulate();
+
+    float mDiffX;
+    float mDiffY;
+    float mDiffZ;
+
+    const int mTilesX = 100;
+    const int mTilesZ = 100;
+
+    const std::string terrainFileName = "terrainData.txt";
+    void calculateIndices();
 };
 
 #endif //TRIANGLESURFACE_H
