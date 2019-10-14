@@ -22,9 +22,11 @@ public:
 
     RenderWindow *mRenderWindow; //Just to be able to call checkForGLerrors()
 
-protected:
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
+
+protected:
+
 
     GLuint mVAO{0};
     GLuint mVBO{0};

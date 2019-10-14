@@ -16,8 +16,10 @@ SOURCES += main.cpp \
     GSL/vector4d.cpp \
     GSL/gsl_math.cpp \
     renderwindow.cpp \
+    rollingball.cpp \
     shader.cpp \
     mainwindow.cpp \
+    sphere.cpp \
     triangle.cpp \
     texture.cpp \
     vertex.cpp \
@@ -37,8 +39,10 @@ HEADERS += \
     GSL/gsl_math.h \
     GSL/math_constants.h \
     renderwindow.h \
+    rollingball.h \
     shader.h \
     mainwindow.h \
+    sphere.h \
     triangle.h \
     texture.h \
     vertex.h \

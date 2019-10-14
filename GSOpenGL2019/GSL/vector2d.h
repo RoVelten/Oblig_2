@@ -4,6 +4,7 @@
 #include "gltypes.h"
 #include <cmath>
 #include <iostream>
+#include "vector3d.h"
 
 namespace gsl
 {
@@ -29,7 +30,6 @@ public:
     GLfloat length() const;
     void normalize();
     Vector2D normalized();
-    static GLfloat cross(const Vector2D &v1, const Vector2D &v2);
     static GLfloat dot(const Vector2D &v1, const Vector2D &v2);
 
     //Getters and setters
@@ -48,6 +48,9 @@ public:
 
     GLfloat x;
     GLfloat y;
+    //replaced the old cross function
+    static Vector3D cross(const Vector2D &v1, const Vector2D &v2);
+    Vector3D barycentricCoordinates(const Vector2D &p1, const Vector2D &p2, const Vector2D &p3);
 };
 
 } //namespace
