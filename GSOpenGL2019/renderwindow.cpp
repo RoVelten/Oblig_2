@@ -104,26 +104,20 @@ void RenderWindow::init()
     mVisualObjects.push_back(temp);
 
     mSurface = new TriangleSurface();
-    mSurface->readTxtFiles("D:/Programming/OpenGL/Vissim/TerrainData");
+    mSurface->readTxtFiles("D:/VSIM/Oblig_2/GSOpenGL2019/InnData");
     mSurface->init();
     mVisualObjects.push_back(mSurface);
 
 
     mPlayer = new RollingBall();
     mPlayer->init();
-    mPlayer->mMatrix.setPosition(50,150,50);
+    mPlayer->mMatrix.setPosition(50,150,30);
     mVisualObjects.push_back(mPlayer);
-    for(int i=0; i<10; i++)
-    {
-        mBalls.push_back(new RollingBall());
-        mBalls.back()->init();
-        mBalls.back()->mMatrix.setPosition(i*100,100,i*100);
-        mVisualObjects.push_back(mBalls.back());
-    }
+
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(-1.f, -100.f, 4.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(-1.f, -50.f, 4.f));
 }
 
 ///Called each frame - doing the rendering

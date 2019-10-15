@@ -6,22 +6,8 @@
 #include <QDirIterator>
 
 
-//Might need to comment out everything
-//except mMatrix
+
 TriangleSurface::TriangleSurface() : VisualObject() {
-//    Vertex v{};
-//    v.set_xyz(0,0,0); v.set_rgb(1,0,0); v.set_uv(0,0);
-//    mVertices.push_back(v);
-//    v.set_xyz(0.5,0,0); v.set_rgb(0,1,0);  v.set_uv(1,0);
-//    mVertices.push_back(v);
-//    v.set_xyz(0.5,0.5,0); v.set_rgb(0,0,1); v.set_uv(1,1);
-//    mVertices.push_back(v);
-//    v.set_xyz(0,0,0); v.set_rgb(0,1,0); v.set_uv(0,0);
-//    mVertices.push_back(v);
-//    v.set_xyz(0.5,0.5,0); v.set_rgb(1,0,0); v.set_uv(1,1);
-//    mVertices.push_back(v);
-//    v.set_xyz(0,0.5,0); v.set_rgb(0,0,1); v.set_uv(0,1);
-//    mVertices.push_back(v);
 
     mMatrix.setToIdentity();
 }
